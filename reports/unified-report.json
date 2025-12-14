@@ -1,110 +1,22 @@
 {
-  "generated_at": "2025-12-14T12:07:25.166950Z",
+  "generated_at": "2025-12-14T13:38:47.871364Z",
   "inputs": {
     "semgrep": "/Users/aleksandrlavruhin/phystech/AppSec/lab07/sast/semgrep-report.json",
     "checkov": "/Users/aleksandrlavruhin/phystech/AppSec/lab07/sast/checkov-report/results_json.json",
     "dependency_check": "/Users/aleksandrlavruhin/phystech/AppSec/lab07/sca/dependency-check-report/dependency-check-report.json"
   },
   "summary": {
-    "total_findings": 62,
+    "total_findings": 55,
     "by_tool": {
-      "semgrep": 5,
-      "checkov": 2,
       "dependency-check": 55
     },
     "by_severity": {
-      "LOW": 1,
-      "CRITICAL": 24,
-      "HIGH": 26,
-      "UNKNOWN": 2,
-      "MEDIUM": 9
+      "MEDIUM": 9,
+      "CRITICAL": 21,
+      "HIGH": 25
     }
   },
   "findings": [
-    {
-      "tool": "semgrep",
-      "rule_id": "sast.py-info-version-disclosure",
-      "severity": "LOW",
-      "title": "Раскрытие версии приложения в ответе.",
-      "file": "vulnerable-app/app.py",
-      "line": 26,
-      "cve": "",
-      "cwe": "",
-      "owasp": "",
-      "details": "Раскрытие версии приложения в ответе."
-    },
-    {
-      "tool": "semgrep",
-      "rule_id": "sast.py-os-system-rce",
-      "severity": "CRITICAL",
-      "title": "RCE через os.system с данными пользователя.",
-      "file": "vulnerable-app/app.py",
-      "line": 52,
-      "cve": "",
-      "cwe": "",
-      "owasp": "",
-      "details": "RCE через os.system с данными пользователя."
-    },
-    {
-      "tool": "semgrep",
-      "rule_id": "sast.py-arbitrary-file-read",
-      "severity": "CRITICAL",
-      "title": "Чтение произвольного файла по пути из запроса (LFI/Path Traversal).",
-      "file": "vulnerable-app/app.py",
-      "line": 68,
-      "cve": "",
-      "cwe": "",
-      "owasp": "",
-      "details": "Чтение произвольного файла по пути из запроса (LFI/Path Traversal)."
-    },
-    {
-      "tool": "semgrep",
-      "rule_id": "sast.py-unsafe-pickle-deserialization",
-      "severity": "CRITICAL",
-      "title": "Небезопасная десериализация через pickle.loads.",
-      "file": "vulnerable-app/app.py",
-      "line": 79,
-      "cve": "",
-      "cwe": "",
-      "owasp": "",
-      "details": "Небезопасная десериализация через pickle.loads."
-    },
-    {
-      "tool": "semgrep",
-      "rule_id": "sast.py-eval-user-input",
-      "severity": "HIGH",
-      "title": "Опасное использование eval на пользовательском вводе.",
-      "file": "vulnerable-app/app.py",
-      "line": 88,
-      "cve": "",
-      "cwe": "",
-      "owasp": "",
-      "details": "Опасное использование eval на пользовательском вводе."
-    },
-    {
-      "tool": "checkov",
-      "rule_id": "CKV_DOCKER_2",
-      "severity": "UNKNOWN",
-      "title": "Ensure that HEALTHCHECK instructions have been added to container images",
-      "file": "vulnerable-app/Dockerfile",
-      "line": 1,
-      "cve": "",
-      "cwe": "",
-      "owasp": "",
-      "details": "Ensure that HEALTHCHECK instructions have been added to container images"
-    },
-    {
-      "tool": "checkov",
-      "rule_id": "CKV_DOCKER_3",
-      "severity": "UNKNOWN",
-      "title": "Ensure that a user for the container has been created",
-      "file": "vulnerable-app/Dockerfile",
-      "line": 1,
-      "cve": "",
-      "cwe": "",
-      "owasp": "",
-      "details": "Ensure that a user for the container has been created"
-    },
     {
       "tool": "dependency-check",
       "rule_id": "pkg:maven/commons-httpclient/commons-httpclient@3.1",

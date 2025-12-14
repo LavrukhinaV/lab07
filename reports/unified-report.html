@@ -3,12 +3,12 @@
 <style>body{font-family:system-ui,Arial,sans-serif;margin:24px;} table{border-collapse:collapse;width:100%;} th,td{border:1px solid #ddd;padding:8px;vertical-align:top;} th{background:#f6f6f6;text-align:left;} .tag{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid #ccc;font-size:12px;} </style>
 </head><body>
 <h1>Unified Security Report</h1>
-<p><b>Generated:</b> 2025-12-14T12:07:25.166950Z</p>
+<p><b>Generated:</b> 2025-12-14T13:38:47.871364Z</p>
 <h2>Summary</h2>
 <ul>
-<li><b>Total findings:</b> 62</li>
-<li><b>By tool:</b> {'semgrep': 5, 'checkov': 2, 'dependency-check': 55}</li>
-<li><b>By severity:</b> {'LOW': 1, 'CRITICAL': 24, 'HIGH': 26, 'UNKNOWN': 2, 'MEDIUM': 9}</li>
+<li><b>Total findings:</b> 55</li>
+<li><b>By tool:</b> {'dependency-check': 55}</li>
+<li><b>By severity:</b> {'MEDIUM': 9, 'CRITICAL': 21, 'HIGH': 25}</li>
 </ul>
 <h2>Findings</h2>
 <table>
@@ -201,33 +201,6 @@
 <td>/src/lib/groovy-all-2.1.6.jar</td>
 <td></td>
 <td>When an application with unsupported Codehaus versions of Groovy from 1.7.0 to 2.4.3, Apache Groovy 2.4.4 to 2.4.7 on classpath uses standard Java serialization mechanisms, e.g. to communicate between servers or to store local data, it was possible for an attacker to bake a special serialized object that will execute code directly when deserialized. All applications which rely on serialization and do not isolate the code which deserializes objects were subject to this vulnerability.</td>
-</tr>
-<tr>
-<td>semgrep</td>
-<td><span class='tag'>CRITICAL</span></td>
-<td>sast.py-arbitrary-file-read</td>
-<td>Чтение произвольного файла по пути из запроса (LFI/Path Traversal).</td>
-<td>vulnerable-app/app.py</td>
-<td>68</td>
-<td>Чтение произвольного файла по пути из запроса (LFI/Path Traversal).</td>
-</tr>
-<tr>
-<td>semgrep</td>
-<td><span class='tag'>CRITICAL</span></td>
-<td>sast.py-os-system-rce</td>
-<td>RCE через os.system с данными пользователя.</td>
-<td>vulnerable-app/app.py</td>
-<td>52</td>
-<td>RCE через os.system с данными пользователя.</td>
-</tr>
-<tr>
-<td>semgrep</td>
-<td><span class='tag'>CRITICAL</span></td>
-<td>sast.py-unsafe-pickle-deserialization</td>
-<td>Небезопасная десериализация через pickle.loads.</td>
-<td>vulnerable-app/app.py</td>
-<td>79</td>
-<td>Небезопасная десериализация через pickle.loads.</td>
 </tr>
 <tr>
 <td>dependency-check</td>
@@ -455,15 +428,6 @@
 <td>In FasterXML jackson-databind before 2.13.4, resource exhaustion can occur because of a lack of a check in BeanDeserializer._deserializeFromArray to prevent use of deeply nested arrays. An application is vulnerable only with certain customized choices for deserialization.</td>
 </tr>
 <tr>
-<td>semgrep</td>
-<td><span class='tag'>HIGH</span></td>
-<td>sast.py-eval-user-input</td>
-<td>Опасное использование eval на пользовательском вводе.</td>
-<td>vulnerable-app/app.py</td>
-<td>88</td>
-<td>Опасное использование eval на пользовательском вводе.</td>
-</tr>
-<tr>
 <td>dependency-check</td>
 <td><span class='tag'>MEDIUM</span></td>
 <td>CVE-2018-1000873</td>
@@ -543,33 +507,6 @@
 <td>/src/lib/groovy-all-2.1.6.jar</td>
 <td></td>
 <td>Apache Groovy provides extension methods to aid with creating temporary directories. Prior to this fix, Groovy's implementation of those extension methods was using a now superseded Java JDK method call that is potentially not secure on some operating systems in some contexts. Users not using the extension methods mentioned in the advisory are not affected, but may wish to read the advisory for further details. Versions Affected: 2.0 to 2.4.20, 2.5.0 to 2.5.13, 3.0.0 to 3.0.6, and 4.0.0-alpha-1. Fixed in versions 2.4.21, 2.5.14, 3.0.7, 4.0.0-alpha-2.</td>
-</tr>
-<tr>
-<td>semgrep</td>
-<td><span class='tag'>LOW</span></td>
-<td>sast.py-info-version-disclosure</td>
-<td>Раскрытие версии приложения в ответе.</td>
-<td>vulnerable-app/app.py</td>
-<td>26</td>
-<td>Раскрытие версии приложения в ответе.</td>
-</tr>
-<tr>
-<td>checkov</td>
-<td><span class='tag'>UNKNOWN</span></td>
-<td>CKV_DOCKER_2</td>
-<td>Ensure that HEALTHCHECK instructions have been added to container images</td>
-<td>vulnerable-app/Dockerfile</td>
-<td>1</td>
-<td>Ensure that HEALTHCHECK instructions have been added to container images</td>
-</tr>
-<tr>
-<td>checkov</td>
-<td><span class='tag'>UNKNOWN</span></td>
-<td>CKV_DOCKER_3</td>
-<td>Ensure that a user for the container has been created</td>
-<td>vulnerable-app/Dockerfile</td>
-<td>1</td>
-<td>Ensure that a user for the container has been created</td>
 </tr>
 </table>
 </body></html>

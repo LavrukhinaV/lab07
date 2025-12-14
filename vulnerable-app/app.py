@@ -1,29 +1,36 @@
-from flask import Flask, request, make_response
-import sqlite3
-import os
-import subprocess
-import pickle
+import html
 import logging
+import os
+import sqlite3
+from pathlib import Path
+
+from flask import Flask, Response, jsonify, request
 
 app = Flask(__name__)
 
-app.config["DEBUG"] = True
+# Не хардкодим DEBUG — Semgrep просит управлять через env
+# FLASK_DEBUG=1/0
+app.config["DEBUG"] = os.getenv("FLASK_DEBUG", "0") == "1"
 
-DB_USER = "admin"
-DB_PASSWORD = "SuperSecret123"
-DB_PATH = "app.db"
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-logging.basicConfig(level=logging.DEBUG)
+DB_PATH = os.getenv("DB_PATH", "app.db")
+
+# Разрешаем читать файлы только из этой директории
+SAFE_READ_DIR = Path(os.getenv("SAFE_READ_DIR", "/tmp")).resolve()
 
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
     return conn
 
 
 @app.route("/")
 def index():
-    return "Vulnerable lab07 app v1.0"
+    # Не возвращаем HTML/версию в строке — просто JSON
+    return jsonify({"status": "ok"}), 200
 
 
 @app.route("/user")
@@ -31,73 +38,48 @@ def get_user():
     username = request.args.get("name", "")
     conn = get_db()
     cur = conn.cursor()
-    query = f"SELECT id, name, email FROM users WHERE name = '{username}'"  # nosec B608
-    app.logger.debug("Executing query: %s", query)
-    rows = cur.execute(query).fetchall()
+
+    # Параметризованный запрос (без f-string)
+    rows = cur.execute(
+        "SELECT id, name, email FROM users WHERE name = ?",
+        (username,),
+    ).fetchall()
     conn.close()
-    return {"result": rows}
+
+    return jsonify({"result": [dict(r) for r in rows]}), 200
 
 
 @app.route("/search")
 def search():
     q = request.args.get("q", "")
-    html = f"<h1>Results for: {q}</h1>"
-    return make_response(html, 200)
-
-
-@app.route("/ping")
-def ping():
-    host = request.args.get("host", "127.0.0.1")
-    cmd = f"ping -c 1 {host}"  # nosec B605
-    os.system(cmd)
-    return f"Pinged {host}"
-
-
-@app.route("/backup")
-def backup():
-    target = request.args.get("target", "/tmp/backup.sql")  # nosec B108
-    cmd = ["sh", "-c", f"pg_dump mydb > {target}"]
-    subprocess.call(cmd)
-    return f"Backup to {target} started"
+    # Semgrep ругался на ручной HTML. Возвращаем JSON.
+    return jsonify({"query": q, "count": 0, "results": []}), 200
 
 
 @app.route("/read")
 def read_file():
-    path = request.args.get("path", "/etc/passwd")
-    try:
-        with open(path, "r") as f:
-            data = f.read()
-        return f"<pre>{data}</pre>"
-    except Exception as e:
-        return str(e), 500
+    # Вместо "<pre>...</pre>" вернём text/plain + ограничим директорию
+    raw_path = request.args.get("path", "")
+    if not raw_path:
+        return jsonify({"error": "path is required"}), 400
 
+    target = Path(raw_path).expanduser().resolve()
 
-@app.route("/load")
-def load():
-    data = request.args.get("data", "")
-    try:
-        obj = pickle.loads(bytes.fromhex(data))  # nosec B301
-        return f"Loaded object: {obj}"
-    except Exception as e:
-        return f"Error: {e}", 500
+    # Запрещаем выход за пределы SAFE_READ_DIR
+    if SAFE_READ_DIR not in target.parents and target != SAFE_READ_DIR:
+        return jsonify({"error": "forbidden path"}), 403
 
+    if not target.exists() or not target.is_file():
+        return jsonify({"error": "not found"}), 404
 
-@app.route("/calc")
-def calc():
-    expr = request.args.get("expr", "1+1")
-    result = eval(expr)  # nosec B307
-    return str(result)
-
-
-@app.route("/debug")
-def debug():
-    headers = dict(request.headers)
-    env = dict(os.environ)
-    return {
-        "headers": headers,
-        "env_sample": {k: env[k] for k in list(env)[:10]},
-    }
+    data = target.read_text(encoding="utf-8", errors="replace")
+    # Возвращаем plain text, не HTML
+    return Response(data, mimetype="text/plain; charset=utf-8", status=200)
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)  # nosec B104
+    # Semgrep ругался на 0.0.0.0 — по умолчанию локальный хост
+    host = os.getenv("FLASK_HOST", "127.0.0.1")
+    port = int(os.getenv("PORT", "8080"))
+    debug = os.getenv("FLASK_DEBUG", "0") == "1"
+    app.run(host=host, port=port, debug=debug)
