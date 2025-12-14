@@ -423,7 +423,10 @@ $ bash cheat_check_yuorself.sh
 Выполнена самопроверка `cheat_check_yuorself.sh.` Скрипт подтвердил, что результаты `SAST (Semgrep)` и `IaC (Checkov)` после исправлений не содержат сработок `(0 findings / 0 failed checks)`. В финальных отчётах остаются только уязвимости `SCA (OWASP Dependency-Check)`.
 
 - ✔ 12. Делайте все коммиты на соответствующих шагах, далее заливайте изменения в удаленный репозиторий.
-```
+```bash
+git add -A
+git commit -m "chore: finalize lab07 reports and fixes"
+git push
 ```
 - ✔ 13. Подготовьте отчет `gist`.
 ```bash
